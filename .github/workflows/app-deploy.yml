@@ -1,0 +1,28 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  Build:
+    runs-on: windows-selfhosted
+    steps:   
+    - name: Download a Build Artifact
+      uses: actions/test-repo@v2.0.5
+      with:
+        name: Parts
+        path: ${{github.workspace}}
+    - name: Run Powershell
+      run: |
+        & '${{github.workspace}}\PartsUnlimited-aspnet45\app_pool.ps1' -pool_name ${{env.app_pool_name}} -site_name ${{env.site_name}} - packagepath ${{env.contentpath}}
